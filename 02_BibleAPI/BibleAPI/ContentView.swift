@@ -11,6 +11,12 @@ struct ContentView: View {
     @StateObject var bibleModel = BibleModel()
     @State var reference = "john 3:17"
     
+    private func getVerse() {
+        Task {
+            await bibleModel.getVerse(reference: reference)
+        }
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -19,7 +25,7 @@ struct ContentView: View {
                         Text("Reference:")
                         TextField("john 3:17", text: $reference)
                         Button {
-                            bibleModel.getVerse(reference: reference)
+                            getVerse()
                         } label: {
                             Image(systemName: "magnifyingglass")
                         }
@@ -45,9 +51,8 @@ struct ContentView: View {
             .navigationTitle("Bible Search")
         }
         .padding([.leading, .trailing])
-        .onAppear {
-            // descomentar para fazer loading no início
-            bibleModel.getVerse(reference: reference)
+        .task {
+            getVerse()
         }
     }
 }

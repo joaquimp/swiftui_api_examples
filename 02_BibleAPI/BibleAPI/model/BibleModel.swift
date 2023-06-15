@@ -4,50 +4,51 @@
 //
 //  Created by Joaquim Pessoa Filho on 14/06/23.
 //
-//  https://designcode.io/swiftui-advanced-handbook-http-request
 
 import Foundation
 
 class BibleModel: ObservableObject {
     @Published var bibleText: BibleText?
     @Published var loading: Bool = false
+    @Published var error: BibleError?
     
-    func getVerse(reference: String) {
+    @MainActor func getVerse(reference: String) async {
         let ref = reference.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        guard let url = URL(string: "https://bible-api.com/\(ref)") else { fatalError("Missing URL") }
-        loading = true
-        bibleText = nil
+        guard let url = URL(string: "https://bible-api.com/\(ref)") else {
+            self.error = .invalidURL
+            return
+        }
+        self.error = nil
+        self.loading = true
+        self.bibleText = nil
         
-        let urlRequest = URLRequest(url: url)
-        
-        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            // por ser uma acao assincrona o codigo nao sera executado
-            // na thread principal (thread que executa os codigos de atualizacao
-            // de tela)
-            DispatchQueue.main.async {
-                self.loading = false
-            }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
             
-            if let error = error {
-                print("Request error: ", error)
+            self.loading = false
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                self.error = .invalidResponse
                 return
             }
             
-            guard let response = response as? HTTPURLResponse else { return }
-            
-            if response.statusCode == 200 {
-                guard let data = data else { return }
-                DispatchQueue.main.async {
-                    do {
-                        let decoded = try JSONDecoder().decode(BibleText.self, from: data)
-                        self.bibleText = decoded
-                    } catch let error {
-                        print("Error decoding: ", error)
-                    }
-                }
+            do {
+                let decoded = try JSONDecoder().decode(BibleText.self, from: data)
+                self.bibleText = decoded
+            } catch let error {
+                print("Error decoding: ", error)
+                self.error = .requestError
             }
+        } catch {
+            print("Request error: ", error)
+            self.error = .requestError
         }
-        
-        dataTask.resume()
     }
+}
+
+enum BibleError {
+    case requestError
+    case invalidData
+    case invalidURL
+    case invalidResponse
 }
