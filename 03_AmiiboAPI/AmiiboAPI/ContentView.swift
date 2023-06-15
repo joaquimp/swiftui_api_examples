@@ -11,6 +11,12 @@ struct ContentView: View {
     @StateObject var amiiboModel = AmiiboModel()
     @State var character = "mario"
     
+    private func getAmiibo() {
+        Task {
+            await amiiboModel.getAmiibo(name: character)
+        }
+    }
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -19,7 +25,7 @@ struct ContentView: View {
                         Text("Character")
                         TextField("mario", text: $character)
                         Button {
-                            amiiboModel.getAmiibo(name: character)
+                            getAmiibo()
                         } label: {
                             Image(systemName: "magnifyingglass")
                         }
@@ -29,7 +35,7 @@ struct ContentView: View {
                         ForEach(0..<amiiboModel.amiibos.count, id: \.self) { index in
                             AmiiboView(amiibo: amiiboModel.amiibos[index])
                         }
-                    }
+                    }.listStyle(.plain)
                 }
                 
                 if amiiboModel.loading {
@@ -41,9 +47,8 @@ struct ContentView: View {
                 }
             }
         }
-        .padding([.leading, .trailing])
-        .onAppear {
-            amiiboModel.getAmiibo(name: character)
+        .task {
+            getAmiibo()
         }
     }
 }

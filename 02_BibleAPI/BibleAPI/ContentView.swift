@@ -20,7 +20,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                VStack {
+                ScrollView {
                     HStack {
                         Text("Reference:")
                         TextField("john 3:17", text: $reference)
@@ -50,7 +50,6 @@ struct ContentView: View {
             }
             .navigationTitle("Bible Search")
         }
-        .padding([.leading, .trailing])
         .task {
             getVerse()
         }

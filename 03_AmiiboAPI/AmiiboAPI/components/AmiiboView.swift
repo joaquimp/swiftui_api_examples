@@ -12,7 +12,6 @@ struct AmiiboView: View {
     
     var body: some View {
         ZStack {
-            Color("card")
             VStack() {
                 AsyncImage(url: URL(string: amiibo.image)) { phase in
                     switch phase {
