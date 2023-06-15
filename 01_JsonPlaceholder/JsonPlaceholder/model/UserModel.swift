@@ -11,42 +11,45 @@ import Foundation
 class UserModel: ObservableObject {
     @Published var users: [User] = []
     @Published var loading: Bool = false
+    @Published var error: UserError?
     
-    func getUsers() {
-        guard let url = URL(string: "https://jsonplaceholder.typicode.com/users") else { fatalError("Missing URL") }
-        loading = true
-        users = []
+    @MainActor func getUsers() async {
+        guard let url = URL(string: "https://jsonplaceholder.typicode.com/users") else {
+            self.error = .invalidURL
+            return
+        }
+        self.error = nil
+        self.loading = true
+        self.users = []
         
-        let urlRequest = URLRequest(url: url)
-        
-        let dataTask = URLSession.shared.dataTask(with: urlRequest) { (data, response, error) in
-            // por ser uma acao assincrona o codigo nao sera executado
-            // na thread principal (thread que executa os codigos de atualizacao
-            // de tela)
-            DispatchQueue.main.async {
-                self.loading = false
-            }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
             
-            if let error = error {
-                print("Request error: ", error)
+            self.loading = false
+            
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                self.error = .invalidResponse
                 return
             }
             
-            guard let response = response as? HTTPURLResponse else { return }
             
-            if response.statusCode == 200 {
-                guard let data = data else { return }
-                DispatchQueue.main.async {
-                    do {
-                        let decodedUsers = try JSONDecoder().decode([User].self, from: data)
-                        self.users = decodedUsers
-                    } catch let error {
-                        print("Error decoding: ", error)
-                    }
-                }
+            do {
+                let decodedUsers = try JSONDecoder().decode([User].self, from: data)
+                self.users = decodedUsers
+            } catch let error {
+                print("Error decoding: ", error)
+                self.error = .invalidData
             }
+        } catch {
+            print("Request error: ", error)
+            self.error = .requestError
         }
-        
-        dataTask.resume()
     }
+}
+
+enum UserError: Error {
+    case requestError
+    case invalidURL
+    case invalidResponse
+    case invalidData
 }

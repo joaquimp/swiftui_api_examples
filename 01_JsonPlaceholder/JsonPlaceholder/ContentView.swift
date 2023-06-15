@@ -8,22 +8,28 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var userModel = UserModel()
+    @StateObject private var userModel = UserModel()
+    
+    private func getUsers() {
+        Task {
+            await userModel.getUsers()
+        }
+    }
     
     var body: some View {
         NavigationView {
             ZStack {
                 List(userModel.users) { user in
-                    //                UserRow(user: user)
+//                    UserRow(user: user)
                     Text(user.name)
                 }
                 .refreshable {
-                    userModel.getUsers()
+                    getUsers()
                 }
                 .navigationTitle("Users")
                 .toolbar {
                     Button {
-                        userModel.getUsers()
+                        getUsers()
                     } label: {
                         Image(systemName: "arrow.clockwise.icloud")
                     }
@@ -39,10 +45,9 @@ struct ContentView: View {
                 }
             }
         }
-        .padding([.leading, .trailing])
-        .onAppear {
+        .task {
             // descomentar para fazer loading no início
-//            userModel.getUsers()
+            await userModel.getUsers()
         }
     }
 }

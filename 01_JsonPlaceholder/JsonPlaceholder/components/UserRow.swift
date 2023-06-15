@@ -23,24 +23,46 @@ struct UserRow: View {
 
 struct UserRow_Previews: PreviewProvider {
     static var previews: some View {
-        UserRow(user: User(
-            id: 10,
-            name: "Joca Filho",
-            username: "Flanctun",
-            email: "joaquim@email.com",
-            address: Address(
-                street: "Rua da Consoloção 930",
-                suite: "",
-                city: "São Paulo",
-                zipcode: "00000-000",
-                geo: Geo(
-                    lat: "-14.3990",
-                    lng: "-120.7677")),
-            phone: "+55 (11) 1234-5678",
-            website: "www.mackenzie.br/joca",
-            company: Company(
-                name: "Universidade Presbiteriana Mackenzie",
-                catchPhrase: "Isso é Mackenzie",
-                bs: "educação")))
+        List {
+            UserRow(user: User(
+                id: 10,
+                name: "Joca Filho",
+                username: "Flanctun",
+                email: "joaquim@email.com",
+                address: Address(
+                    street: "Rua da Consoloção 930",
+                    suite: "",
+                    city: "São Paulo",
+                    zipcode: "00000-000",
+                    geo: Geo(
+                        lat: "-14.3990",
+                        lng: "-120.7677")),
+                phone: "+55 (11) 1234-5678",
+                website: "www.mackenzie.br/joca",
+                company: Company(
+                    name: "Universidade Presbiteriana Mackenzie",
+                    catchPhrase: "Isso é Mackenzie",
+                    bs: "educação")))
+            UserRow(user: User(
+                id: 10,
+                name: "Juuuuu",
+                username: "juflorzinha123",
+                email: "ju@email.com",
+                address: Address(
+                    street: "Rua da Consoloção 930",
+                    suite: "",
+                    city: "São Paulo",
+                    zipcode: "00000-000",
+                    geo: Geo(
+                        lat: "-14.3990",
+                        lng: "-120.7677")),
+                phone: "+55 (11) 1234-5678",
+                website: "www.mackenzie.br/joca",
+                company: Company(
+                    name: "Universidade Presbiteriana Mackenzie",
+                    catchPhrase: "Isso é Mackenzie",
+                    bs: "educação")))
+        }
+        
     }
 }
