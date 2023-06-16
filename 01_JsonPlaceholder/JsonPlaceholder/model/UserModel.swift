@@ -24,14 +24,12 @@ class UserModel: ObservableObject {
         
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            
             self.loading = false
             
             guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
                 self.error = .invalidResponse
                 return
             }
-            
             
             do {
                 let decodedUsers = try JSONDecoder().decode([User].self, from: data)
@@ -41,8 +39,9 @@ class UserModel: ObservableObject {
                 self.error = .invalidData
             }
         } catch {
-            print("Request error: ", error)
+            self.loading = false
             self.error = .requestError
+            print("Request error: ", error)
         }
     }
 }

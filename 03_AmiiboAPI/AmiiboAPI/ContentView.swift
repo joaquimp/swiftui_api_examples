@@ -18,7 +18,7 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 VStack {
                     HStack {
@@ -29,13 +29,15 @@ struct ContentView: View {
                         } label: {
                             Image(systemName: "magnifyingglass")
                         }
-
                     }
                     List {
                         ForEach(0..<amiiboModel.amiibos.count, id: \.self) { index in
                             AmiiboView(amiibo: amiiboModel.amiibos[index])
+                                .frame(maxWidth: .infinity)
                         }
-                    }.listStyle(.plain)
+                    }
+                    .listRowSeparator(.hidden)
+                    .listStyle(.plain)
                 }
                 
                 if amiiboModel.loading {
@@ -45,9 +47,9 @@ struct ContentView: View {
                         EmptyView()
                     }
                 }
-            }
-        }
-        .task {
+            }.padding()
+            .navigationTitle("AmiiboAPI")
+        }.task {
             getAmiibo()
         }
     }

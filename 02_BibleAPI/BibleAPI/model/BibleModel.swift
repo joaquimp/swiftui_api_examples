@@ -12,9 +12,9 @@ class BibleModel: ObservableObject {
     @Published var loading: Bool = false
     @Published var error: BibleError?
     
-    @MainActor func getVerse(reference: String) async {
+    @MainActor func getVerse(reference: String, translation: String) async {
         let ref = reference.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
-        guard let url = URL(string: "https://bible-api.com/\(ref)") else {
+        guard let url = URL(string: "https://bible-api.com/\(ref)?translation=\(translation)") else {
             self.error = .invalidURL
             return
         }
@@ -24,7 +24,6 @@ class BibleModel: ObservableObject {
         
         do {
             let (data, response) = try await URLSession.shared.data(from: url)
-            
             self.loading = false
             
             guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
@@ -40,8 +39,9 @@ class BibleModel: ObservableObject {
                 self.error = .requestError
             }
         } catch {
-            print("Request error: ", error)
+            self.loading = true
             self.error = .requestError
+            print("Request error: ", error)
         }
     }
 }

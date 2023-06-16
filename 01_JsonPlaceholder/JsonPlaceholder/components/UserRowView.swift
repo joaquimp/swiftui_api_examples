@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserRow: View {
+struct UserRowView: View {
     var user: User
     
     var body: some View {
@@ -24,7 +24,7 @@ struct UserRow: View {
 struct UserRow_Previews: PreviewProvider {
     static var previews: some View {
         List {
-            UserRow(user: User(
+            UserRowView(user: User(
                 id: 10,
                 name: "Joca Filho",
                 username: "Flanctun",
@@ -43,7 +43,7 @@ struct UserRow_Previews: PreviewProvider {
                     name: "Universidade Presbiteriana Mackenzie",
                     catchPhrase: "Isso é Mackenzie",
                     bs: "educação")))
-            UserRow(user: User(
+            UserRowView(user: User(
                 id: 10,
                 name: "Juuuuu",
                 username: "juflorzinha123",

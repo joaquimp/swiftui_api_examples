@@ -39,8 +39,8 @@ class AmiiboModel: ObservableObject {
             }
         } catch {
             self.loading = false
-            print("Request error: ", error)
             self.error = .requestError
+            print("Request error: ", error)
         }
     }
 }

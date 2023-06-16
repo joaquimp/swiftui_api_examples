@@ -20,20 +20,11 @@ struct ContentView: View {
         NavigationView {
             ZStack {
                 List(userModel.users) { user in
-//                    UserRow(user: user)
+                    //UserRowView(user: user)
                     Text(user.name)
                 }
                 .refreshable {
                     getUsers()
-                }
-                .navigationTitle("Users")
-                .toolbar {
-                    Button {
-                        getUsers()
-                    } label: {
-                        Image(systemName: "arrow.clockwise.icloud")
-                    }
-
                 }
                 
                 if userModel.loading {
@@ -44,10 +35,19 @@ struct ContentView: View {
                     }
                 }
             }
+            .navigationTitle("Users")
+            .toolbar {
+                Button {
+                    getUsers()
+                } label: {
+                    Image(systemName: "arrow.clockwise.icloud")
+                }
+            }
         }
+        .navigationViewStyle(.stack)
         .task {
             // descomentar para fazer loading no início
-            await userModel.getUsers()
+//            await userModel.getUsers()
         }
     }
 }

@@ -12,7 +12,7 @@ struct EmptyView: View {
         VStack {
             Text("👀")
                 .font(.largeTitle)
-            Text("Nobody is herer")
+            Text("Nobody is here")
                 .foregroundColor(Color.gray)
         }
     }

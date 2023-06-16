@@ -12,22 +12,20 @@ struct AmiiboView: View {
     
     var body: some View {
         ZStack {
-            VStack() {
+            VStack {
                 AsyncImage(url: URL(string: amiibo.image)) { phase in
                     switch phase {
                         case .empty:
                             ProgressView()
-                                .frame(maxWidth: 200, maxHeight: 200)
+                                
                         case .success(let image):
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 200, maxHeight: 200)
                         case .failure:
                             Image("boo")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: 200, maxHeight: 200)
                         @unknown default:
                             // Since the AsyncImagePhase enum isn't frozen,
                             // we need to add this currently unused fallback
@@ -35,17 +33,18 @@ struct AmiiboView: View {
                             // in the future:
                             EmptyView()
                     }
-                }
+                }.frame(maxWidth: 140, maxHeight: 140)
                 Text(amiibo.name)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Color("cardText"))
                     .font(.title)
                 Text(amiibo.gameSeries)
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Color("cardText"))
             }
             .frame(maxWidth: .infinity)
         }
-        .frame(width: 300, height: 300, alignment: .center)
-        .cornerRadius(64)
+        .frame(width: 240, height: 240, alignment: .center)
+        .background(Color("card"))
+        .cornerRadius(42)
     }
 }
 
@@ -58,7 +57,7 @@ struct UserRow_Previews: PreviewProvider {
                 character: "Mario",
                 gameSeries: "Super Mario",
                 image: "https://raw.githubusercontent.com/N3evin/AmiiboAPI/master/images/icon_00000000-00000002.png",
-            name: "Mario"))
+                name: "Mario"))
             
             AmiiboView(amiibo: Amiibo(
                 amiiboSeries: "Super Smash Bros.",
